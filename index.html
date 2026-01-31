@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudais AI - Pro Humanizer</title>
+    <style>
+        :root { --p: #4f46e5; --s: #7c3aed; }
+        body { margin: 0; padding: 20px; background: #f0f2f5; font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; }
+        .card { background: white; width: 100%; max-width: 480px; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, var(--p), var(--s)); padding: 35px 20px; color: white; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; }
+        .content { padding: 25px; }
+        textarea { width: 100%; height: 150px; padding: 15px; border: 2px solid #eee; border-radius: 20px; box-sizing: border-box; resize: none; font-size: 16px; outline: none; text-align: right; background: #fdfdfd; }
+        .btn { width: 100%; background: var(--p); color: white; border: none; padding: 18px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .result-box { margin-top: 25px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: right; min-height: 100px; position: relative; }
+        .result-tag { position: absolute; top: -12px; right: 20px; background: var(--s); color: white; padding: 2px 12px; border-radius: 10px; font-size: 12px; }
+        .social-links { margin-top: 25px; display: flex; justify-content: center; gap: 10px; }
+        .social-links a { text-decoration: none; font-size: 12px; color: var(--p); font-weight: bold; background: #f0f7ff; padding: 8px 15px; border-radius: 50px; border: 1px solid #dbeafe; }
+        .footer { background: #f8fafc; padding: 15px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
+        <h1>Sudais AI Humanizer</h1>
+        <p>Expert in AI to Human Conversion</p>
+    </div>
+
+    <div class="content">
+        <textarea id="inputText" placeholder="یہاں اپنا AI مواد ڈالیں..."></textarea>
+        <button onclick="humanize()" id="btn" class="btn">تبدیل کریں (Humanize)</button>
+
+        <div class="result-box">
+            <span class="result-tag">نتیجہ</span>
+            <div id="outputText" style="color: #334155; line-height: 1.6;">انتظار ہے...</div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://wa.me/923000000000" target="_blank">WhatsApp</a>
+            <a href="https://facebook.com/yourprofile" target="_blank">Facebook</a>
+            <a href="https://yourportfolio.com" target="_blank">Portfolio</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 | Developed by <b>Sudais</b> | All Rights Reserved
+    </div>
+</div>
+
+<script>
+    async function humanize() {
+        const input = document.getElementById('inputText').value;
+        const output = document.getElementById('outputText');
+        const btn = document.getElementById('btn');
+
+        if(!input.trim()) { alert("براہ کرم ٹیکسٹ لکھیں!"); return; }
+
+        // آپ کی ایکٹیو Key میں نے یہاں لگا دی ہے
+        const API_KEY = "AIzaSyDV32idI3nCQipLqYL8v_AQEZQ_cSM3V7o"; 
+
+        btn.innerText = "پروسیسنگ...";
+        btn.disabled = true;
+        output.innerText = "سدیس AI جواب تیار کر رہا ہے...";
+
+        try {
+            // ہم Gemini 1.5 Flash استعمال کر رہے ہیں جو تیز ترین ہے
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: "Reword this text to make it sound human and natural: " + input }] }]
+                })
+            });
+
+            const data = await response.json();
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                output.innerText = data.candidates[0].content.parts[0].text;
+            } else {
+                output.innerText = "گوگل کی طرف سے جواب نہیں ملا۔ اپنی Key یا نیٹ چیک کریں۔";
+            }
+        } catch (error) {
+            output.innerText = "نیٹ ورک کنکشن کا مسئلہ ہے۔";
+        } finally {
+            btn.innerText = "تبدیل کریں (Humanize)";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
